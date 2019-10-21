@@ -1,0 +1,21 @@
+{
+  "name": "SOS Concert",
+  "short_name": "SOS Concert",
+  "icons": [
+    {
+      "src": "/static/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/static/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "background_color": "#FFFFFF",
+  "description": "SOS Concert",
+  "display": "fullscreen",
+  "start_url": "/",
+  "theme_color": "#000"
+}

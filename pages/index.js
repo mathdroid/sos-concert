@@ -105,6 +105,9 @@ export default () => {
       <Reset />
       <Head>
         <title>{copy}</title>
+        <link rel="manifest" href="/static/manifest.json" />
+        <meta name="theme-color" content={INITIAL_COLOR} />
+        <meta name="description" content="SOS @ Concerts!" />
       </Head>
       <Hero shouldInvert={shouldInvert} mainColor={mainColor}>
         <Title fontSize={fontSize} contentEditable={isTitleEditable}>

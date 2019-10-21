@@ -11,7 +11,7 @@ const nextConfig = {
     runtimeCaching: [
       {
         urlPattern: /^https?.*/,
-        handler: "NetworkFirst",
+        handler: "CacheFirst",
         options: {
           cacheName: "https-calls",
           networkTimeoutSeconds: 15,

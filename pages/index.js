@@ -10,6 +10,9 @@ import createPersistedState from "use-persisted-state";
 import Reset from "../components/reset";
 
 const useCopyState = createPersistedState("copy");
+const useFPSState = createPersistedState("fps");
+const useFontSizeState = createPersistedState("font-size");
+const useColorState = createPersistedState("color");
 
 const INITIAL_FPS = 1.5;
 const INITIAL_FONT_SIZE = 25;
@@ -117,13 +120,13 @@ const useToggle = (initBool = false) => {
 
 export default () => {
   const [copy, setCopy] = useCopyState("S.O.S");
+  const [fps, setFps] = useFPSState(INITIAL_FPS);
+  const [fontSize, setFontSize] = useFontSizeState(INITIAL_FONT_SIZE);
+  const [mainColor, setMainColor] = useColorState(INITIAL_COLOR);
   const [shouldInvert, toggleInvert] = useToggle(true);
-  const [fps, setFps] = useState(INITIAL_FPS);
-  const [fontSize, setFontSize] = useState(INITIAL_FONT_SIZE);
   const [shouldShowControl, toggleShowControl] = useToggle(false);
   // const [shouldShowPresets, toggleShowPresets] = useToggle(false);
   const [isTitleEditable, toggleTitleEditable] = useToggle(false);
-  const [mainColor, setMainColor] = useState(INITIAL_COLOR);
 
   const interval = 1000 / fps;
 

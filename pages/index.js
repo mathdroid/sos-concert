@@ -4,12 +4,37 @@ import styled from "@emotion/styled";
 import useInterval from "@use-it/interval";
 import Slider from "react-input-slider";
 import { CirclePicker } from "react-color";
+import { contrastRatio } from "chromatism";
+import createPersistedState from "use-persisted-state";
 
 import Reset from "../components/reset";
+
+const useCopyState = createPersistedState("copy");
+const useFPSState = createPersistedState("fps");
+const useFontSizeState = createPersistedState("font-size");
+const useColorState = createPersistedState("color");
 
 const INITIAL_FPS = 1.5;
 const INITIAL_FONT_SIZE = 25;
 const INITIAL_COLOR = `#f44336`;
+
+// const presets = [
+//   {
+//     name: "sos",
+//     color: `#f44336`,
+//     copy: "S.O.S"
+//   },
+//   {
+//     name: "exit",
+//     color: `#8bc34a`,
+//     copy: "EXIT"
+//   },
+//   {
+//     name: "security",
+//     color: `#3f51b5`,
+//     copy: "Security!"
+//   }
+// ];
 
 const Hero = styled.main`
   display: flex;
@@ -17,18 +42,25 @@ const Hero = styled.main`
   justify-content: center;
   width: 100vw;
   height: 100vh;
-  background-color: ${props =>
-    props.shouldInvert ? "#222" : props.mainColor || INITIAL_COLOR};
+  background-color: ${props => props.bgColor || "#000"};
   color: #fafafa;
   overflow: hidden;
 `;
 
-const Title = styled.h1`
+const Title = styled.input`
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  border: none;
+  box-shadow: none;
+  background: transparent;
   text-align: center;
   margin-left: auto;
   margin-right: auto;
   line-height: 1.15;
   font-size: ${props => props.fontSize || INITIAL_FONT_SIZE}vw;
+  font-weight: bolder;
+  color: ${props => props.textColor || "#fff"};
 `;
 
 const Label = styled.label`
@@ -59,8 +91,8 @@ const EditButton = styled.button`
   align-self: center;
   position: relative;
   opacity: 0.5;
-  color: #111;
-  border-color: #111;
+  color: ${props => props.textColor || "#000"};
+  border-color: ${props => props.textColor || "#000"};
   background-color: transparent;
   border-radius: 8px;
   font-size: 0.75rem;
@@ -73,6 +105,9 @@ const Buttons = styled.div`
   align-items: baseline;
   justify-content: space-around;
   margin-bottom: 1rem;
+  button + button {
+    margin-left: 1rem;
+  }
 `;
 
 const useToggle = (initBool = false) => {
@@ -84,13 +119,14 @@ const useToggle = (initBool = false) => {
 };
 
 export default () => {
-  const [copy, setCopy] = useState("S.O.S");
+  const [copy, setCopy] = useCopyState("S.O.S");
+  const [fps, setFps] = useFPSState(INITIAL_FPS);
+  const [fontSize, setFontSize] = useFontSizeState(INITIAL_FONT_SIZE);
+  const [mainColor, setMainColor] = useColorState(INITIAL_COLOR);
   const [shouldInvert, toggleInvert] = useToggle(true);
-  const [fps, setFps] = useState(INITIAL_FPS);
-  const [fontSize, setFontSize] = useState(INITIAL_FONT_SIZE);
   const [shouldShowControl, toggleShowControl] = useToggle(false);
+  // const [shouldShowPresets, toggleShowPresets] = useToggle(false);
   const [isTitleEditable, toggleTitleEditable] = useToggle(false);
-  const [mainColor, setMainColor] = useState(INITIAL_COLOR);
 
   const interval = 1000 / fps;
 
@@ -99,6 +135,17 @@ export default () => {
   const onChangeComplete = color => {
     setMainColor(color.hex);
   };
+
+  const onChangeTitle = e => {
+    if (isTitleEditable) {
+      setCopy(e.target.value);
+    }
+  };
+
+  const bgColor = shouldInvert
+    ? contrastRatio(contrastRatio(mainColor).hex).hex
+    : mainColor;
+  const textColor = contrastRatio(bgColor).hex;
 
   return (
     <>
@@ -109,19 +156,25 @@ export default () => {
         <meta name="theme-color" content={INITIAL_COLOR} />
         <meta name="description" content="SOS @ Concerts!" />
       </Head>
-      <Hero shouldInvert={shouldInvert} mainColor={mainColor}>
-        <Title fontSize={fontSize} contentEditable={isTitleEditable}>
-          {copy}
-        </Title>
+      <Hero bgColor={bgColor}>
+        <Title
+          fontSize={fontSize}
+          onChange={onChangeTitle}
+          value={copy}
+          textColor={textColor}
+        />
 
         <Control>
           <Buttons>
-            <EditButton onClick={toggleTitleEditable}>
+            <EditButton onClick={toggleTitleEditable} textColor={textColor}>
               {isTitleEditable ? "Save Text" : "Edit Text"}
             </EditButton>
-            <EditButton onClick={toggleShowControl}>
+            <EditButton onClick={toggleShowControl} textColor={textColor}>
               {shouldShowControl ? "Hide Controls" : "Show Controls"}
             </EditButton>
+            {/* <EditButton onClick={toggleShowPresets} textColor={textColor}>
+              {shouldShowPresets ? "Hide Presets" : "Show Presets"}
+            </EditButton> */}
           </Buttons>
 
           {shouldShowControl && (
@@ -133,7 +186,9 @@ export default () => {
                     backgroundColor: mainColor
                   },
                   track: {
-                    marginBottom: "1rem"
+                    marginBottom: "2rem",
+                    marginTop: "1rem",
+                    width: "100%"
                   }
                 }}
                 axis="x"
@@ -150,7 +205,9 @@ export default () => {
                     backgroundColor: mainColor
                   },
                   track: {
-                    marginBottom: "1rem"
+                    marginBottom: "2rem",
+                    marginTop: "1rem",
+                    width: "100%"
                   }
                 }}
                 axis="x"

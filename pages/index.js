@@ -90,10 +90,13 @@ const EditButton = styled.button`
   margin-top: 1rem;
   align-self: center;
   position: relative;
-  opacity: 0.5;
-  color: ${props => props.textColor || "#000"};
-  border-color: ${props => props.textColor || "#000"};
-  background-color: transparent;
+  opacity: ${props => (props.isActive ? 1 : 0.5)};
+  color: ${props =>
+    props.isActive ? props.mainColor : props.textColor || "#000"};
+  border-color: ${props =>
+    props.isActive ? props.mainColor : props.textColor || "#000"};
+  background-color: ${props =>
+    !props.isActive ? "transparent" : props.textColor || "#000"};
   border-radius: 8px;
   font-size: 0.75rem;
   width: 8rem;
@@ -108,6 +111,12 @@ const Buttons = styled.div`
   button + button {
     margin-left: 1rem;
   }
+`;
+
+const P = styled.p`
+  margin-top: 1rem;
+  text-align: center;
+  color: #222;
 `;
 
 const useToggle = (initBool = false) => {
@@ -166,10 +175,20 @@ export default () => {
 
         <Control>
           <Buttons>
-            <EditButton onClick={toggleTitleEditable} textColor={textColor}>
+            <EditButton
+              isActive={shouldShowControl}
+              onClick={toggleTitleEditable}
+              textColor={textColor}
+              mainColor={mainColor}
+            >
               {isTitleEditable ? "Save Text" : "Edit Text"}
             </EditButton>
-            <EditButton onClick={toggleShowControl} textColor={textColor}>
+            <EditButton
+              isActive={shouldShowControl}
+              onClick={toggleShowControl}
+              textColor={textColor}
+              mainColor={mainColor}
+            >
               {shouldShowControl ? "Hide Controls" : "Show Controls"}
             </EditButton>
             {/* <EditButton onClick={toggleShowPresets} textColor={textColor}>
@@ -223,6 +242,15 @@ export default () => {
                   marginTop: "1rem"
                 }}
               />
+              <P>
+                by <a href="https://twitter.com/mathdroid">mathdroid</a>.
+              </P>
+
+              <P>
+                <a href="https://github.com/mathdroid/sos-concert">
+                  source code
+                </a>
+              </P>
             </Card>
           )}
         </Control>

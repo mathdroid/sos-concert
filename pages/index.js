@@ -82,7 +82,7 @@ const Card = styled.div`
   flex-direction: column;
   border-radius: 4px 4px 0 0;
   padding: 1rem 1rem 4rem 1rem;
-  box-shadow: 0 4px 4px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
 `;
 
@@ -91,15 +91,15 @@ const EditButton = styled.button`
   align-self: center;
   position: relative;
   opacity: ${props => (props.isActive ? 1 : 0.5)};
-  color: ${props =>
-    props.isActive ? props.mainColor : props.textColor || "#000"};
-  border-color: ${props =>
-    props.isActive ? props.mainColor : props.textColor || "#000"};
-  background-color: ${props =>
-    !props.isActive ? "transparent" : props.textColor || "#000"};
-  border-radius: 8px;
+  border-radius: 4px;
+  background-color: ${props => props.bgColor};
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  border-style: solid;
+  border-width: 1px;
+  border-color: ${props => props.textColor};
   font-size: 0.75rem;
   width: 8rem;
+  color: ${props => props.textColor};
 `;
 
 const Buttons = styled.div`
@@ -134,7 +134,6 @@ export default () => {
   const [mainColor, setMainColor] = useColorState(INITIAL_COLOR);
   const [shouldInvert, toggleInvert] = useToggle(true);
   const [shouldShowControl, toggleShowControl] = useToggle(false);
-  // const [shouldShowPresets, toggleShowPresets] = useToggle(false);
   const [isTitleEditable, toggleTitleEditable] = useToggle(false);
 
   const interval = 1000 / fps;
@@ -151,10 +150,10 @@ export default () => {
     }
   };
 
-  const bgColor = shouldInvert
-    ? contrastRatio(contrastRatio(mainColor).hex).hex
-    : mainColor;
-  const textColor = contrastRatio(bgColor).hex;
+  const textColor = contrastRatio(mainColor).hex;
+  const secondaryBgColor = contrastRatio(textColor).hex;
+
+  const bgColor = shouldInvert ? secondaryBgColor : mainColor;
 
   return (
     <>
@@ -179,7 +178,7 @@ export default () => {
               isActive={shouldShowControl}
               onClick={toggleTitleEditable}
               textColor={textColor}
-              mainColor={mainColor}
+              bgColor={bgColor}
             >
               {isTitleEditable ? "Save Text" : "Edit Text"}
             </EditButton>
@@ -187,7 +186,7 @@ export default () => {
               isActive={shouldShowControl}
               onClick={toggleShowControl}
               textColor={textColor}
-              mainColor={mainColor}
+              bgColor={bgColor}
             >
               {shouldShowControl ? "Hide Controls" : "Show Controls"}
             </EditButton>
